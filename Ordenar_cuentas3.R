@@ -10,9 +10,17 @@ myfolder <- dirname(myfile)
 library(readr)
 library(dplyr)
 library(openxlsx)
-cartera <- read_delim(myfile,"|", escape_double = FALSE, col_types = cols(CUENTA_SAT = col_double(), NUM_DOCUMENTO = col_character()), trim_ws = TRUE)
-cartera <- data.frame(cartera[,"CUENTA_SAT"],cartera[,"NUM_DOCUMENTO"])
-colnames(cartera)[1:2] <- c("CUENTA","DNI")
+cartera <- read_delim(myfile,"|", escape_double = FALSE, 
+                      col_types = cols(CUENTA_SAT = col_double(), NUM_DOCUMENTO = col_character(), 
+                                       NOMBRES = col_character(), APELLIDO_MATERNO= col_character(), 
+                                       APELLIDO_PATERNO = col_character(), FECHA_FACTURACION=col_integer()), 
+                      trim_ws = TRUE, locale=locale(encoding = "latin1"))
+
+cartera <- data.frame(cartera[,"CUENTA_SAT"],cartera[,"NUM_DOCUMENTO"], cartera[,"NOMBRES"],
+                      cartera[,"APELLIDO_PATERNO"],cartera[,"APELLIDO_MATERNO"], 
+                      cartera[,"FECHA_FACTURACION"])
+
+colnames(cartera)[1:6] <- c("CUENTA","DNI","NOMBRES", "APELLIDO_P","APELLIDO_M","DIAFACTURACION")
 cartera$CUENTA <- ifelse(cartera$CUENTA > 10^11, trunc(cartera$CUENTA/100) , cartera$CUENTA )
 cartera <-  arrange(cartera , CUENTA)
 
