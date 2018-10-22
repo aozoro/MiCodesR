@@ -17,30 +17,17 @@ cartera <- read_delim(myfile,"|", escape_double = FALSE,
                                        APELLIDO_PATERNO = col_character(), FECHA_FACTURACION=col_integer()), 
                       trim_ws = TRUE, locale=locale(encoding = "latin1"))
 
-cartera <- data.frame(cartera[,"CUENTA_SAT"],cartera[,"NUM_DOCUMENTO"], cartera[,"NOMBRES"],
-                      cartera[,"APELLIDO_PATERNO"],cartera[,"APELLIDO_MATERNO"], 
-                      cartera[,"FECHA_FACTURACION"],cartera[,"FECBAJA"])
+cartera <- select(cartera,CUENTA_SAT,NUM_DOCUMENTO,NOMBRES,APELLIDO_PATERNO,APELLIDO_MATERNO,FECBAJA)
 
-colnames(cartera)[1:7] <- c("CUENTA","DNI","NOMBRES", "APELLIDO_P","APELLIDO_M","DIAFACTURACION","FECHACIERRE")
+colnames(cartera)[1:6] <- c("CUENTA","DNI","NOMBRES", "APELLIDO_P","APELLIDO_M","FECHACIERRE")
+cartera <- subset(cartera, FECHACIERRE != "0001-01-01")
 
-N=nrow(cartera)
+Nombre_Completo <- data.frame(ifelse(cartera$APELLIDO_M=="X",paste(cartera$NOMBRES,cartera$APELLIDO_P),paste(cartera$NOMBRES,cartera$APELLIDO_P,cartera$APELLIDO_M)))
+colnames(Nombre_Completo) <- "NOMBRE_COMPLETO"
 
-
-cartera<-data.frame(cartera,vector("character",N),vector("character",N))
-colnames(cartera)[8:9]<-c("ESTADOCUENTA","NOMBRE_COMPLETO")
-
-cartera$ESTADOCUENTA<-ifelse(cartera$FECHACIERRE == "0001-01-01", "A", "C")
-
-cartera$NOMBRE_COMPLETO<-ifelse(cartera$APELLIDO_M=="X",paste(cartera$NOMBRES,cartera$APELLIDO_P),paste(cartera$NOMBRES,cartera$APELLIDO_P,cartera$APELLIDO_M))
-cartera$CUENTA <- ifelse(cartera$CUENTA > 10^11, trunc(cartera$CUENTA/100) , cartera$CUENTA)
-
-
-cartera <- select(cartera,CUENTA,DNI,NOMBRE_COMPLETO,ESTADOCUENTA,FECHACIERRE)
-colnames(cartera)[1:5] <- c("CUENTA","DNI","NOMBRE_COMPLETO","ESTADOCUENTA","FECHACIERRE")
-
-cartera <- subset(cartera,ESTADOCUENTA=="C")
-cartera <- arrange(cartera , CUENTA)
-cartera <- select(cartera,-ESTADOCUENTA)
+cartera<- select(cartera, -NOMBRES, -APELLIDO_P, -APELLIDO_M)
+cartera<- data.frame(cartera[,1:2],Nombre_Completo, cartera[,3:ncol(cartera)])
+cartera<-arrange(cartera,desc(FECHACIERRE))
 
 wb <- createWorkbook()
 stp=10^6
@@ -48,18 +35,19 @@ N=nrow(cartera)
 t=trunc(N/stp)
 nh=ceiling(N/stp)
 
+i<-0
 if (t>=1){
 	for (i in 1:t){
-		 first=1+stp*(i-1)
-		 last = stp*i
-		 hoja<-data.frame(cartera[first:last,])
-		 wsName <-paste0("Hoja",i)
-		 addWorksheet(wb,wsName)
-		 writeData(wb,wsName,hoja)   
+		first=1+stp*(i-1)
+		last = stp*i
+		hoja<-data.frame(cartera[first:last,])
+		wsName <-paste0("Hoja",i)
+		addWorksheet(wb,wsName)
+		writeData(wb,wsName,hoja)   
 	} 
 }
-	
- if(t!=nh){
+
+if(t!=nh){
 	i=i+1
 	first=1+stp*(i-1)
 	last=N
@@ -70,4 +58,3 @@ if (t>=1){
 }
 
 saveWorkbook(wb,paste0(myfolder,"/CuentasCerradas.xlsx"), overwrite = TRUE)
- 
