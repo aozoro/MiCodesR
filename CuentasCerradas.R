@@ -27,6 +27,9 @@ colnames(Nombre_Completo) <- "NOMBRE_COMPLETO"
 
 cartera<- select(cartera, -NOMBRES, -APELLIDO_P, -APELLIDO_M)
 cartera<- data.frame(cartera[,1:2],Nombre_Completo, cartera[,3:ncol(cartera)])
+
+rm("Nombre_Completo")
+
 cartera<-arrange(cartera,desc(FECHACIERRE))
 
 wb <- createWorkbook()
