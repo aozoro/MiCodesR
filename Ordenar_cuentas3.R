@@ -24,6 +24,9 @@ colnames(Nombre_Completo) <- "NOMBRE_COMPLETO"
 
 cartera<- select(cartera, -NOMBRES, -APELLIDO_P, -APELLIDO_M)
 cartera<- data.frame(cartera[,1:2],Nombre_Completo, cartera[,3:ncol(cartera)])
+
+rm("Nombre_Completo")
+
 cartera$CUENTA <- ifelse(cartera$CUENTA > 10^11, trunc(cartera$CUENTA/100) , cartera$CUENTA )
 cartera <-  arrange(cartera , CUENTA)
 
