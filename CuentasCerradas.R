@@ -4,7 +4,7 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 if(length(new.packages)) install.packages(new.packages)
 rm("list.of.packages","new.packages")
 
-myfile <- file.choose()
+myfile <- choose.files(caption="Abrir archivo Cuentas-DNI",filters=Filters["txt",], multi=FALSE)
 myfolder <- dirname(myfile)
 
 library(readr)
