@@ -60,4 +60,6 @@ if(t!=nh){
 	writeData(wb,wsName,hoja)
 }
 
-saveWorkbook(wb,paste0(myfolder,"/CuentasCerradas.xlsx"), overwrite = TRUE)
+path <- paste0(myfolder,"/CuentasCerradas.xlsx")
+paste("Guardando archivo en:", path)
+saveWorkbook(wb, path, overwrite = TRUE)
