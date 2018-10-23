@@ -70,4 +70,6 @@ hoja<- data.frame(Lim,c(1:t))
 
 writeData(wb,wsName,hoja,colNames = FALSE)
 
-saveWorkbook(wb,paste0(myfolder,"/BuscarCuenta.xlsx"), overwrite = TRUE)
+path <- paste0(myfolder,"/BuscarCuenta.xlsx")
+paste("Guardando archivo en:", path)
+saveWorkbook(wb,path, overwrite = TRUE)
