@@ -22,7 +22,7 @@ cartera <- select(cartera,CUENTA_SAT,NUM_DOCUMENTO,NOMBRES,APELLIDO_PATERNO,APEL
 colnames(cartera)[1:6] <- c("CUENTA","DNI","NOMBRES", "APELLIDO_P","APELLIDO_M","FECHACIERRE")
 cartera <- subset(cartera, FECHACIERRE != "0001-01-01")
 
-Nombre_Completo <- data.frame(ifelse(cartera$APELLIDO_M=="X",paste(cartera$NOMBRES,cartera$APELLIDO_P),paste(cartera$NOMBRES,cartera$APELLIDO_P,cartera$APELLIDO_M)))
+Nombre_Completo <- data.frame(ifelse(is.na(cartera$APELLIDO_M),paste(cartera$NOMBRES,cartera$APELLIDO_P),paste(cartera$NOMBRES,cartera$APELLIDO_P,cartera$APELLIDO_M)))
 colnames(Nombre_Completo) <- "NOMBRE_COMPLETO"
 
 cartera<- select(cartera, -NOMBRES, -APELLIDO_P, -APELLIDO_M)
