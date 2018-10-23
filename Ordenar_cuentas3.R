@@ -19,7 +19,7 @@ cartera <- read_delim(myfile,"|", escape_double = FALSE,
 cartera <- select(cartera,CUENTA_SAT,NUM_DOCUMENTO,NOMBRES,APELLIDO_PATERNO,APELLIDO_MATERNO,FECHA_FACTURACION)
 colnames(cartera)[1:6] <- c("CUENTA","DNI","NOMBRES", "APELLIDO_P","APELLIDO_M","DIAFACTURACION")
 
-Nombre_Completo <- data.frame(ifelse(cartera$APELLIDO_M=="X",paste(cartera$NOMBRES,cartera$APELLIDO_P),paste(cartera$NOMBRES,cartera$APELLIDO_P,cartera$APELLIDO_M)))
+Nombre_Completo <- data.frame(ifelse(is.na(cartera$APELLIDO_M),paste(cartera$NOMBRES,cartera$APELLIDO_P),paste(cartera$NOMBRES,cartera$APELLIDO_P,cartera$APELLIDO_M)))
 colnames(Nombre_Completo) <- "NOMBRE_COMPLETO"
 
 cartera<- select(cartera, -NOMBRES, -APELLIDO_P, -APELLIDO_M)
