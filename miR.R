@@ -1,4 +1,4 @@
-install_packages<-function(list.of.packages){
+install_packages<-function(list.of.packages,lib=TRUE){
     if (!is.vector(list.of.packages)){
         list.of.packages<-c(list.of.packages)
     }
@@ -9,7 +9,9 @@ install_packages<-function(list.of.packages){
         install.packages(new.packages)
     }
 
-    for(package in list.of.packages){
-        library(package,character.only = TRUE)
+    if (lib){
+        for(package in list.of.packages){
+            library(package,character.only = TRUE)
+        }
     }
 }
